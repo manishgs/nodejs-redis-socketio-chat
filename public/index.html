@@ -40,15 +40,17 @@
                                 <div class="space-y-2">
                                     <div v-for="(message, index) in messages">
                                         <div class="flex"
-                                        v-bind:class="{ 'justify-end' : message.username === currentUser.username, 'justify-start': message.username !== currentUser.username }"
+                                        v-bind:class="{ 'justify-end' : message.from.id === currentUser.id, 'justify-start': message.to.id !== activeChatUser.id }"
                                         >
                                             <div>
                                                 <div 
-                                                v-bind:class="{ 'bg-amber-100' : message.username === currentUser.username, 'bg-sky-100': message.username !== currentUser.username }"
+                                                v-bind:class="{ 'bg-amber-100' : message.from.id === currentUser.id, 'bg-sky-100': message.to.id !== activeChatUser.id }"
                                                 class="px-4 py-2 text-gray-700 rounded shadow">
                                                         <span class="block">{{message.message}}</span>
                                                 </div>
-                                                <div class="block text-xs text-gray-400">{{moment(message.date)}}</div>
+                                                <div class="block text-xs text-gray-400">{{moment(message.date)}} 
+                                                   <span v-if="message.to.id === activeChatUser.id"> {{message.sent ? 'sent' : 'sending'}} </span>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -135,6 +137,12 @@ const app = new Vue({
             this.socket.on('users', (data)=>{
                 this.users = data.users;
             });
+            this.socket.on('messages', (data)=>{
+               this.messages = data.messages;
+            });
+            this.socket.on('chat', (data)=>{
+               this.messages.push(data.message);
+            });
 
             // emit events
             this.socket.emit('login',{username: this.username}, (data)=>{
@@ -164,12 +172,16 @@ const app = new Vue({
     },
     submitMessage : function(e){
         e.preventDefault();
-         this.messages.push({
-            id:this.currentUser.id,
-            username:this.currentUser.username,
+        const data = {
+            id:Date.now(),
+            from:this.currentUser,
+            to:this.activeChatUser,
             message:this.message,
             date:new Date(),
-         })
+            sent:false
+         };
+         this.messages.push(data);
+         this.socket.emit('chat',data,this.updateMessageSent.bind(this));
          this.message = '';
          setTimeout(this.scrollToBottom,200);
     },
@@ -179,6 +191,16 @@ const app = new Vue({
     },
     mounted:function(){
         this.scrollToBottom();
+    },
+    updateMessageSent:function(res){
+        console.log(res, this.messages);
+        this.messages = this.messages.map(msg=>{
+            if(msg.id === res.message.id){
+                msg.sent = true;
+            };
+            return msg;
+        });
+        console.log(this.messages);
     }
   }
 })

@@ -13,15 +13,34 @@ app.use(express.static('public'));
 
 
 const users = new Map();
+const messages = new Map();
+
+const getMessageByUser = (id: number) => {
+    let msg = [];
+
+    for (let [_, message] of messages) {
+        if (message.to.id == id || message.from.id == id) {
+            msg.push(message);
+        }
+    }
+
+    return msg;
+}
 
 Promise.all([pubClient.connect(), subClient.connect()]).then(() => {
     io.adapter(createAdapter(pubClient, subClient));
     io.on("connection", (socket) => {
         socket.on('login', (data, callback) => {
-            data.id = Date.now();
-            users.set(data.id, data);
+            if (!users.has(data.username)) {
+                users.set(data.username, data);
+                data.id = Date.now();
+            } else {
+                data = users.get(data.username);
+            }
+
             callback({ success: true, user: data });
             io.emit('users', { users: Array.from(users.values()) });
+            io.emit('messages', { messages: getMessageByUser(data.id) || [] });
             socket.join(data.id);
         });
 
@@ -29,6 +48,12 @@ Promise.all([pubClient.connect(), subClient.connect()]).then(() => {
             users.delete(data.user.id);
             io.emit('users', { users: Array.from(users.values()) });
             callback({ success: true });
+        });
+
+        socket.on('chat', (data, callback) => {
+            socket.to(data.to.id).emit('chat', { message: data });
+            callback({ success: true, message: data })
+            messages.set(data.id, data);
         });
     });
 
