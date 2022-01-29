@@ -6,100 +6,196 @@
         crossorigin="anonymous"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script></head>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
 <body>
 
-    <div class="container mx-auto mt-16" style="width: 850px; height: 600px;">
+    <div id="app" class="container mx-auto mt-16" style="width: 850px; height: 600px;">
+        <div class="flex justify-end mb-2">
+            Hi {{currentUser.username}}
+        </div>
         <div class="flex h-full">
             <div class="w-1/4  text-gray-300 bg-gray-700">
                 <ul id="users">
-                    <li class="relative w-full px-4 py-6 border-b border-amber-600 border-solid border-bottom border-color-g hover:cursor-pointer bg-gray-900">
-                        <span class="absolute w-3 h-3 bg-green-600 rounded-full left-6 top-8"></span>
-                       <span class="ml-6"> User 0</span>
-                    </li>
-                    <li class="relative px-4 py-6 border-b border-gray-600 border-solid hover:cursor-pointer">
-                       <span class="absolute w-3 h-3 bg-green-600 rounded-full left-6 top-8"></span>
-                       <span class="ml-6"> User 1</span>     
-                    </li>
-                    <li class="relative px-4 py-6 border-b border-gray-600 border-solid hover:cursor-pointer">
-                       <span class="absolute w-3 h-3 bg-green-600 rounded-full left-6 top-8"></span>
-                       <span class="ml-6"> User 2</span>     
-                    </li>
-                    <li class="relative px-4 py-6 border-b border-gray-600 border-solid hover:cursor-pointer">
-                       <span class="absolute w-3 h-3 bg-green-600 rounded-full left-6 top-8"></span>
-                       <span class="ml-6"> User 3</span>     
-                    </li>
-                    <li class="relative px-4 py-6 border-b border-gray-600 border-solid hover:cursor-pointer">
-                       <span class="absolute w-3 h-3 bg-green-600 rounded-full left-6 top-8"></span>
-                       <span class="ml-6"> User 4</span>     
-                    </li>
-                    <li class="relative px-4 py-6 border-b border-gray-600 border-solid hover:cursor-pointer">
-                       <span class="absolute w-3 h-3 bg-green-600 rounded-full left-6 top-8"></span>
-                       <span class="ml-6"> User 5</span>     
+                    <li v-for="(user, index) in onlineUsers()">
+                        <div 
+                            v-on:click="setActiveChatUser(user)"  
+                            class="relative w-full px-4 py-6 border-b  border-solid border-gray-500 border-bottom  hover:cursor-pointer"
+                            v-bind:class="{'bg-gray-900 border-amber-600': activeChatUser && user.id == activeChatUser.id}"
+                        >
+                            <span class="absolute w-3 h-3 bg-green-600 rounded-full left-6 top-8"></span>
+                            <span class="ml-6"> {{user.username}}</span>
+                        </div>
                     </li>
                 </ul>
             </div>
 
             <div class="w-3/4  pl-2 ">
-                    <div class="w-full border rounded">
+                    <div v-if="activeChatUser" class="w-full border rounded">
                         <div class="relative flex items-center p-3 border-b border-gray-300">
-                            <span class="block ml-2 font-bold text-gray-600">User 0</span>
+                            <span class="absolute w-3 h-3 bg-green-600 rounded-full left-3 top-4"></span>
+                            <span class="block ml-4 font-bold text-gray-600"> {{activeChatUser.username}}</span>
                         </div>
-                        <div class="relative w-full p-6 overflow-y-auto h-[30rem]">
-                            <ul class="space-y-2">
-                            <li class="flex justify-start">
-                                <div class="relative max-w-xl px-4 py-2 text-gray-700 bg-sky-100 rounded shadow">
-                                    <span class="block">Hi</span>
+                        <div id="chat-container" class="relative w-full p-6 overflow-y-auto h-[30rem]">
+                            <div class="space-y-2">
+                                <div v-for="(message, index) in messages">
+                                    <div class="flex"
+                                    v-bind:class="{ 'justify-end' : message.username === currentUser.username, 'justify-start': message.username !== currentUser.username }"
+                                    >
+                                        <div>
+                                            <div 
+                                            v-bind:class="{ 'bg-amber-100' : message.username === currentUser.username, 'bg-sky-100': message.username !== currentUser.username }"
+                                            class="px-4 py-2 text-gray-700 rounded shadow">
+                                                    <span class="block">{{message.message}}</span>
+                                            </div>
+                                            <div class="block text-xs text-gray-400">{{moment(message.date)}}</div>
+                                        </div>
+                                    </div>
                                 </div>
-                            </li>
-                            <li class="flex justify-end">
-                                <div class="relative max-w-xl px-4 py-2 text-gray-700 bg-amber-100 rounded shadow">
-                                 <span class="block">Hiiii</span>
-                                </div>
-                            </li>
-                            <li class="flex justify-end">
-                                <div class="relative max-w-xl px-4 py-2 text-gray-700 bg-amber-100 rounded shadow">
-                                 <span class="block">how are you?</span>
-                                </div>
-                            </li>
-                            <li class="flex justify-start">
-                                <div class="relative max-w-xl px-4 py-2 text-gray-700 bg-sky-100 rounded shadow">
-                                    <span class="block">Lorem ipsum dolor sit, amet consectetur adipisicing elit. </span>
-                                </div>
-                            </li>
-                            </ul>
-            
+                            </div>
                         </div>
-            
-                        <div class="flex items-center justify-between w-full p-3 border-t border-gray-300">
-                            <input type="text" placeholder="Message"
-                            class="block w-full py-2 pl-4 mx-3 bg-gray-100 rounded-full outline-none focus:text-gray-700"
-                            name="message" required />
-                            <button type="submit">
-                            <svg class="w-5 h-5 text-gray-500 origin-center transform rotate-90" xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 20 20" fill="currentColor">
-                                <path
-                                d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
-                            </svg>
-                            </button>
-                        </div>
+                        <form v-on:submit="submitMessage" class="flex items-center justify-between w-full p-3 border-t border-gray-300">
+                                 <input maxlength="2048" aria-autocomplete="both" aria-haspopup="false" autocapitalize="off" autocomplete="off" autocorrect="off"
+                                  v-model="message" type="text" placeholder="Message"
+                                class="block w-full py-2 pl-4 mx-3 bg-gray-100 rounded-full outline-none focus:text-gray-700"
+                                name="message" required />
+                                <button type="submit">
+                                <svg class="w-5 h-5 text-gray-500 origin-center transform rotate-90" xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 20 20" fill="currentColor">
+                                    <path
+                                    d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
+                                </svg>
+                                </button>
+                        </form>
+                    </div>
+                    <div v-else class="grid place-items-center h-full bg-gray-100 text-gray-400">
+                        Please select User
                     </div>
             </div>
         </div>
     </div>
-
 </body>
 
 <script>
-    const socket = io(location.href, {
-        transports: ['websocket'],
-        path: '/ws/'
-    });
+const app = new Vue({
+  el: '#app',
+  data: {
+    currentUser:{
+        id:1,
+        username:'User 0',
+    },
+    username:null,
+    error: '',
+    message:'',
+    messages:[
+        {
 
-    // listeners
-    socket.on('connection');
+            id:1,
+            username:'User 0',
+            message:'Hi',
+            date:'2020-01-01',
+        },
+        {
+            id:2,
+            username:'User 1',
+            message:'Hiiii',
+            date:'2020-01-01',
+        },
+        {
+            id:2,
+            username:'User 0',
+            message:'how are you?',
+            date:'2020-01-01',
+        },
+        {
+            id:1,
+            username:'User 0',
+            message:'Lorem ipsum dolor sit, amet consectetur adipisicing elit. ',
+            date:'2020-01-01',
+        }
+    ],
+    users:[{
+        id:1,
+        username:'User 0',
+    },
+    {
+        id:2,
+        username:'User 1',
+    },
+    {
+        id:3,
+        username:'User 2',
+    },
+    {
+        id:4,
+        username:'User 3',
+    }],
+    activeChatUser: null,
+    socket:null
+  },
+  methods:{
+    setActiveChatUser:function (user) {
+        this.activeChatUser = user;
+    },
+    moment:(date)=>{
+        return moment(date).fromNow();
+    },
+    login:function(){
+        if(!this.username){
+            alert('Please enter a username');
+            return;
+        }
+        try{
+            this.socket = io(location.href, {path:'/ws/'});
 
-    // emit events
-    socket.emit('message', 'hello world');
+            // listeners
+            this.socket.on('connection');
+
+            // emit events
+            this.socket.emit('login',{username: this.username}, (data)=>{
+                if(data.error){
+                    this.error = data.error;
+                }else{
+                    this.currentUser = data.user;
+                }
+            });
+        }catch(e){
+            this.error = e.message;
+        }
+    },
+    logout:function(){
+        this.socket.emit('logout',{ username: this.username},(data)=>{
+            if(data.error){
+                this.error = data.error;
+            }else{
+                this.currentUser = null;
+            }
+        });
+    },
+    onlineUsers:function(){
+        return this.users.filter(user=>{
+            return user.id !== this.currentUser.id;
+        });
+    },
+    submitMessage : function(e){
+        e.preventDefault();
+         this.messages.push({
+            id:this.currentUser.id,
+            username:this.currentUser.username,
+            message:this.message,
+            date:new Date(),
+         })
+         this.message = '';
+         setTimeout(this.scrollToBottom,200);
+    },
+    scrollToBottom:function (){
+        var container = this.$el.querySelector("#chat-container");
+        container.scrollTop = container.scrollHeight;
+    },
+    mounted:function(){
+        this.scrollToBottom();
+    }
+  }
+})
 </script>
 
 </html>
