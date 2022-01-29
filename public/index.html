@@ -1,22 +1,105 @@
 <html>
-    <head>
-        <script src="https://cdn.socket.io/4.4.1/socket.io.min.js" integrity="sha384-fKnu0iswBIqkjxrhQCTZ7qlLHOFEgNkRmK2vaO/LbTZSXdJfAu6ewRBdwHPhBo/H" crossorigin="anonymous"></script>
-    </head>
-    <body>
-    </body>
 
-    <script>
-        const socket = io(location.href, {
-            transports: ['websocket'],
-            path:'/ws/'
-        });
-    
-        // listeners
-            socket.on('connection');
-    
-        // emit events
-            socket.emit('message','hello world');
-    </script>
+<head>
+    <script src="https://cdn.socket.io/4.4.1/socket.io.min.js"
+        integrity="sha384-fKnu0iswBIqkjxrhQCTZ7qlLHOFEgNkRmK2vaO/LbTZSXdJfAu6ewRBdwHPhBo/H"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script></head>
+<body>
+
+    <div class="container mx-auto mt-16" style="width: 850px; height: 600px;">
+        <div class="flex h-full">
+            <div class="w-1/4  text-gray-300 bg-gray-700">
+                <ul id="users">
+                    <li class="relative w-full px-4 py-6 border-b border-amber-600 border-solid border-bottom border-color-g hover:cursor-pointer bg-gray-900">
+                        <span class="absolute w-3 h-3 bg-green-600 rounded-full left-6 top-8"></span>
+                       <span class="ml-6"> User 0</span>
+                    </li>
+                    <li class="relative px-4 py-6 border-b border-gray-600 border-solid hover:cursor-pointer">
+                       <span class="absolute w-3 h-3 bg-green-600 rounded-full left-6 top-8"></span>
+                       <span class="ml-6"> User 1</span>     
+                    </li>
+                    <li class="relative px-4 py-6 border-b border-gray-600 border-solid hover:cursor-pointer">
+                       <span class="absolute w-3 h-3 bg-green-600 rounded-full left-6 top-8"></span>
+                       <span class="ml-6"> User 2</span>     
+                    </li>
+                    <li class="relative px-4 py-6 border-b border-gray-600 border-solid hover:cursor-pointer">
+                       <span class="absolute w-3 h-3 bg-green-600 rounded-full left-6 top-8"></span>
+                       <span class="ml-6"> User 3</span>     
+                    </li>
+                    <li class="relative px-4 py-6 border-b border-gray-600 border-solid hover:cursor-pointer">
+                       <span class="absolute w-3 h-3 bg-green-600 rounded-full left-6 top-8"></span>
+                       <span class="ml-6"> User 4</span>     
+                    </li>
+                    <li class="relative px-4 py-6 border-b border-gray-600 border-solid hover:cursor-pointer">
+                       <span class="absolute w-3 h-3 bg-green-600 rounded-full left-6 top-8"></span>
+                       <span class="ml-6"> User 5</span>     
+                    </li>
+                </ul>
+            </div>
+
+            <div class="w-3/4  pl-2 ">
+                    <div class="w-full border rounded">
+                        <div class="relative flex items-center p-3 border-b border-gray-300">
+                            <span class="block ml-2 font-bold text-gray-600">User 0</span>
+                        </div>
+                        <div class="relative w-full p-6 overflow-y-auto h-[30rem]">
+                            <ul class="space-y-2">
+                            <li class="flex justify-start">
+                                <div class="relative max-w-xl px-4 py-2 text-gray-700 bg-sky-100 rounded shadow">
+                                    <span class="block">Hi</span>
+                                </div>
+                            </li>
+                            <li class="flex justify-end">
+                                <div class="relative max-w-xl px-4 py-2 text-gray-700 bg-amber-100 rounded shadow">
+                                 <span class="block">Hiiii</span>
+                                </div>
+                            </li>
+                            <li class="flex justify-end">
+                                <div class="relative max-w-xl px-4 py-2 text-gray-700 bg-amber-100 rounded shadow">
+                                 <span class="block">how are you?</span>
+                                </div>
+                            </li>
+                            <li class="flex justify-start">
+                                <div class="relative max-w-xl px-4 py-2 text-gray-700 bg-sky-100 rounded shadow">
+                                    <span class="block">Lorem ipsum dolor sit, amet consectetur adipisicing elit. </span>
+                                </div>
+                            </li>
+                            </ul>
+            
+                        </div>
+            
+                        <div class="flex items-center justify-between w-full p-3 border-t border-gray-300">
+                            <input type="text" placeholder="Message"
+                            class="block w-full py-2 pl-4 mx-3 bg-gray-100 rounded-full outline-none focus:text-gray-700"
+                            name="message" required />
+                            <button type="submit">
+                            <svg class="w-5 h-5 text-gray-500 origin-center transform rotate-90" xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 20 20" fill="currentColor">
+                                <path
+                                d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
+                            </svg>
+                            </button>
+                        </div>
+                    </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+<script>
+    const socket = io(location.href, {
+        transports: ['websocket'],
+        path: '/ws/'
+    });
+
+    // listeners
+    socket.on('connection');
+
+    // emit events
+    socket.emit('message', 'hello world');
+</script>
+
 </html>
-
-
