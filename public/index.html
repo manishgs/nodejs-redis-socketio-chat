@@ -1,0 +1,22 @@
+<html>
+    <head>
+        <script src="https://cdn.socket.io/4.4.1/socket.io.min.js" integrity="sha384-fKnu0iswBIqkjxrhQCTZ7qlLHOFEgNkRmK2vaO/LbTZSXdJfAu6ewRBdwHPhBo/H" crossorigin="anonymous"></script>
+    </head>
+    <body>
+    </body>
+
+    <script>
+        const socket = io(location.href, {
+            transports: ['websocket'],
+            path:'/ws/'
+        });
+    
+        // listeners
+            socket.on('connection');
+    
+        // emit events
+            socket.emit('message','hello world');
+    </script>
+</html>
+
+
